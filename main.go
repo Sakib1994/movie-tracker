@@ -45,19 +45,24 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to MovieRepo: %v", err)
 	}
+	// Http multiplexer
+	mux := http.NewServeMux()
 
 	movieHandler := handlers.NewMovieHandler(movieRepo, logInstance)
 
-	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
-	http.HandleFunc("/api/movies/random", movieHandler.GetRandomMovies)
+	mux.HandleFunc("GET /api/movies/top", movieHandler.GetTopMovies)
+	mux.HandleFunc("GET /api/movies/random", movieHandler.GetRandomMovies)
+	mux.HandleFunc("GET /api/movies/search", movieHandler.SearchMovies)
+	mux.HandleFunc("GET /api/movies/{id}", movieHandler.GetMovie)
+	mux.HandleFunc("GET /api/genres", movieHandler.GetGenres)
 
 	// Serve static files
-	http.Handle("/", http.FileServer(http.Dir("public")))
+	mux.Handle("GET /", http.FileServer(http.Dir("public")))
 	logInstance.Info("Serving the files!")
 
 	// Start server
 	const addr = ":8080"
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	if err := http.ListenAndServe(addr, mux); err != nil {
 		logInstance.Error("Server failed: %v", err)
 	}
 }
