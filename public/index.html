@@ -39,16 +39,44 @@
     </main>
     <!-- Templates -->
     <template id="template-home">
-            <section class="vertical-scroll" id="top-10">
-                <h2>This Week's Top Movies</h2>
-                <ul></ul>
-            </section>
-            <section class="vertical-scroll" id="random">
-                <h2>Something to watch today</h2>
-                <ul></ul>
-            </section>
-         </template>
-     <footer>
+        <section class="vertical-scroll" id="top-10">
+            <h2>This Week's Top Movies</h2>
+            <ul>
+                <animated-loading data-elements="5" data-width="150px" data-height="220px">
+                </animated-loading>
+            </ul>
+        </section>
+        <section class="vertical-scroll" id="random">
+            <h2>Something to watch today</h2>
+            <ul>
+                <animated-loading data-elements="5" data-width="150px" data-height="220px">
+                </animated-loading>
+            </ul>
+        </section>
+    </template>
+    <template id="template-movie-details">
+        <style>
+
+        </style>
+        <article id="movie">
+            <h2><animated-loading elements="2"></animated-loading></h2>
+            <h3></h3>
+            <header>
+                <img src="" alt="Poster">
+                <youtube-embed id="trailer" data-url="">YouTube loading...</youtube-embed>
+                <section id="actions">
+                    <dl id="metadata">
+                    </dl>
+                    <button>Add to Favorites</button>
+                    <button>Add to Watchlist</button>    
+                </section>
+            </header>
+            <ul id="genres"></ul>
+            <p id="overview"></p>
+            <ul id="cast"></ul>
+        </article>
+    </template>
+    <footer>
         <p>© ReelingIt - FrontendMasters.com</p>
     </footer>
 </body>

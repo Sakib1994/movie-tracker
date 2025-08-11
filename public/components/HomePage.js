@@ -1,15 +1,14 @@
 import { API } from "../services/API.js";
 import { MovieItemComponent } from "./MovieItem.js";
+import './AnimatedLoading.js'
 
 export class Homepage extends HTMLElement {
     async render() {
         const topMovies = await API.getTopMovies()
         const randomMovies = await API.getRandomMovies()
 
-        const top10MoviesEl = document.getElementById("top-10")
-        const randomMoviesEl = document.getElementById("random")
-        renderMoviesInList(topMovies, top10MoviesEl.querySelector("ul"))
-        renderMoviesInList(randomMovies, randomMoviesEl.querySelector("ul"))
+        renderMoviesInList(topMovies, this.querySelector("#top-10 ul"))
+        renderMoviesInList(randomMovies, this.querySelector("#random ul"))
         function renderMoviesInList(movies, ul) {
             ul.innerHTML = '';
             movies.forEach(movie => {
