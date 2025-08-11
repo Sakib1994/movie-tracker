@@ -2,7 +2,7 @@ import { API } from "../services/API.js";
 import { MovieItemComponent } from "./MovieItem.js";
 import './AnimatedLoading.js'
 
-export class Homepage extends HTMLElement {
+export class HomePage extends HTMLElement {
     async render() {
         const topMovies = await API.getTopMovies()
         const randomMovies = await API.getRandomMovies()
@@ -27,4 +27,4 @@ export class Homepage extends HTMLElement {
     }
 }
 
-customElements.define("home-page", Homepage)
+customElements.define("home-page", HomePage)
