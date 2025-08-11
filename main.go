@@ -56,6 +56,24 @@ func main() {
 	mux.HandleFunc("GET /api/movies/{id}", movieHandler.GetMovie)
 	mux.HandleFunc("GET /api/genres", movieHandler.GetGenres)
 
+	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./public/index.html")
+	}
+	/*
+		// SSR for the movie details
+		http.HandleFunc("/movies/", func(w http.ResponseWriter, r *http.Request) {
+			if strings.Count(r.URL.Path, "/") == 2 && strings.HasPrefix(r.URL.Path, "/movies/") {
+				handlers.SSRMovieDetailsHandler(movieRepo, logInstance)(w, r)
+			} else {
+				catchAllClientRoutesHandler(w, r)
+			}
+		})*/
+
+	// Catch All
+	mux.HandleFunc("GET /movies", catchAllHandler)
+	mux.HandleFunc("GET /movies/", catchAllHandler)
+	mux.HandleFunc("GET /account/", catchAllHandler)
+
 	// Serve static files
 	mux.Handle("GET /", http.FileServer(http.Dir("public")))
 	logInstance.Info("Serving the files!")
