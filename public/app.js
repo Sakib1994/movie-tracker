@@ -9,10 +9,17 @@ window.app = {
     search: (event) => {
         event.preventDefault();
         const keywords = document.querySelector("input[type=search]").value;
-        console.info(keywords)
+        app.Router.go(`/movies?q=${keywords}`)
     },
     api: API,
-    Router
+    Router,
+    showError: (message="There was an error loading the page", goToHome=true)=>{
+        document.querySelector("#alert-modal").showModal()
+        document.querySelector("#alert-modal p").textContent = message
+        if (goToHome) app.Router.go("/")
+        return
+    },
+    closeError:()=>document.querySelector("#alert-modal").close()
 }
 window.addEventListener("DOMContentLoaded", () => {
     // document.querySelector("main").appendChild(new HomePage())
