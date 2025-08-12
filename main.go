@@ -45,16 +45,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to MovieRepo: %v", err)
 	}
+	// Initialize account repository
+	accountRepo, err := data.NewAccountRepository(db, logInstance)
+	if err != nil {
+		log.Fatalf("Failed to initialize account repository: %v", err)
+	}
+
 	// Http multiplexer
 	mux := http.NewServeMux()
 
 	movieHandler := handlers.NewMovieHandler(movieRepo, logInstance)
+	accountHandler := handlers.NewAccountHandler(accountRepo, logInstance)
 
 	mux.HandleFunc("GET /api/movies/top", movieHandler.GetTopMovies)
 	mux.HandleFunc("GET /api/movies/random", movieHandler.GetRandomMovies)
 	mux.HandleFunc("GET /api/movies/search", movieHandler.SearchMovies)
 	mux.HandleFunc("GET /api/movies/{id}", movieHandler.GetMovie)
 	mux.HandleFunc("GET /api/genres", movieHandler.GetGenres)
+	mux.HandleFunc("POST /api/account/register/", accountHandler.Register)
+	mux.HandleFunc("POST /api/account/authenticate/", accountHandler.Authenticate)
 
 	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")
