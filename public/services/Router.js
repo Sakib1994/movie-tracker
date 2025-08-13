@@ -20,7 +20,9 @@ const Router = {
         }
         const routePath = route.includes('?') ? route.split('?')[0] : route;
         let pageElement = null;
+        let needsLogin = false;
         for (const r of routes) {
+            needsLogin = r.requireLogIn ===true
             if (typeof r.path === "string" && r.path === routePath) {
                 pageElement = new r.component();
                 break;
@@ -32,6 +34,13 @@ const Router = {
                     pageElement.params = params;
                     break;
                 }
+            }
+        }
+        if (pageElement) {
+            debugger
+            if (needsLogin && app.Store.loggedIn==false) {
+                app.Router.go("/account/login")
+                return
             }
         }
         if (pageElement == null) {

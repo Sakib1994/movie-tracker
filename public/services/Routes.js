@@ -28,7 +28,8 @@ export const routes = [
     },     
     {
         path: "/account/",
-        component: AccountPage
+        component: AccountPage, 
+        requireLogIn: true
     },
 //     {
 //         path: "/account/favorites",

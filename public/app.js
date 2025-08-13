@@ -3,6 +3,7 @@ import { MovieDetailsPage } from "./components/MovieDetailsPage.js";
 import { API } from "./services/API.js";
 import './components/YouTubeEmbed.js'
 import Router from "./services/Router.js";
+import Store from "./services/Store.js";
 
 
 window.app = {
@@ -13,6 +14,7 @@ window.app = {
     },
     api: API,
     Router,
+    Store,
     showError: (message = "There was an error loading the page", goToHome = false) => {
         document.querySelector("#alert-modal").showModal()
         document.querySelector("#alert-modal p").textContent = message
@@ -47,8 +49,8 @@ window.app = {
         if (password != passwordConfirm) errors.push("Passwords don't match");
         if (errors.length == 0) {
             const response = await API.register(name, email, password);
-            debugger
             if (response.success) {
+                app.Store.jwt = response.jwt
                 app.Router.go("/account/")
             } else {
                 app.showError(response.message, false);
@@ -68,6 +70,7 @@ window.app = {
         if (errors.length == 0) {
             const response = await API.authenticate(email, password);
             if (response.success) {
+                app.Store.jwt = response.jwt
                 app.Router.go("/account/")
             } else {
                 app.showError(response.message, false);
@@ -76,6 +79,10 @@ window.app = {
             app.showError(errors.join(". "), false);
         }
     },
+    logout:()=>{
+        Store.jwt = null;
+        app.Router.go("/")
+    }
 }
 window.addEventListener("DOMContentLoaded", () => {
     // document.querySelector("main").appendChild(new HomePage())
