@@ -15,10 +15,29 @@ export const API = {
   getGenres: async () => {
     return await API.fetch("genres");
   },
+  getFavorites: async () => {
+    try {
+      return await API.fetch("account/favorites");
+    } catch (e) {
+      app.Router.go("/account/")
+    }
+  },
+  getWatchlist: async () => {
+    try {
+      return await API.fetch("account/watchlist");
+    } catch (e) {
+      app.Router.go("/account/")
+    }
+
+  },
   fetch: async (ServiceURL, args) => {
     try {
       const queryString = args ? new URLSearchParams(args).toString() : ""
-      const response = await fetch(`${API.baseURL}/${ServiceURL}?${queryString}`);
+      const response = await fetch(`${API.baseURL}/${ServiceURL}?${queryString}`, {
+        headers: {
+          "Authorization": app.Store.jwt ? `Bearer ${app.Store.jwt}` : null
+        }
+      });
       const results = await response.json()
       return results;
     } catch (error) {
@@ -38,7 +57,8 @@ export const API = {
       const response = await fetch(API.baseURL + service, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": app.Store.jwt ? `Bearer ${app.Store.jwt}` : null
         },
         body: JSON.stringify(args)
       });
@@ -49,5 +69,9 @@ export const API = {
       app.showError();
     }
   },
-
+  saveToCollection: async (movie_id, collection) => {
+    return await API.send("/account/save-to-collection/", {
+      movie_id, collection
+    });
+  }
 }

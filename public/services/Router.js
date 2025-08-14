@@ -37,7 +37,6 @@ const Router = {
             }
         }
         if (pageElement) {
-            debugger
             if (needsLogin && app.Store.loggedIn==false) {
                 app.Router.go("/account/login")
                 return

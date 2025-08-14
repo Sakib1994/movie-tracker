@@ -1,5 +1,3 @@
-import { HomePage } from "./components/HomePage.js";
-import { MovieDetailsPage } from "./components/MovieDetailsPage.js";
 import { API } from "./services/API.js";
 import './components/YouTubeEmbed.js'
 import Router from "./services/Router.js";
@@ -59,6 +57,28 @@ window.app = {
             app.showError(errors.join(". "), false);
         }
     },
+    saveToCollection: async (movie_id, collection) => {
+        if (app.Store.loggedIn) {
+            try {
+                const response = await API.saveToCollection(movie_id, collection);
+                if (response.success) {
+                    switch (collection) {
+                        case "favorite":
+                            app.Router.go("/account/favorites")
+                            break;
+                        case "watchlist":
+                            app.Router.go("/account/watchlist")
+                    }
+                } else {
+                    app.showError("We couldn't save the movie.")
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            app.Router.go("/account/");
+        }
+    },
     login: async (event) => {
         event.preventDefault();
         let errors = [];
@@ -79,7 +99,7 @@ window.app = {
             app.showError(errors.join(". "), false);
         }
     },
-    logout:()=>{
+    logout: () => {
         Store.jwt = null;
         app.Router.go("/")
     }

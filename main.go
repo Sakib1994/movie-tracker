@@ -64,6 +64,9 @@ func main() {
 	mux.HandleFunc("GET /api/genres", movieHandler.GetGenres)
 	mux.HandleFunc("POST /api/account/register/", accountHandler.Register)
 	mux.HandleFunc("POST /api/account/authenticate/", accountHandler.Authenticate)
+	mux.HandleFunc("GET /api/account/favorites/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetFavorites)))
+	mux.HandleFunc("GET /api/account/watchlist/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetWatchlist)))
+	mux.HandleFunc("POST /api/account/save-to-collection/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.SaveToCollection)))
 
 	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")

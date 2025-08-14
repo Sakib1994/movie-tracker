@@ -6,7 +6,6 @@ export class HomePage extends HTMLElement {
     async render() {
         const topMovies = await API.getTopMovies()
         const randomMovies = await API.getRandomMovies()
-
         renderMoviesInList(topMovies, this.querySelector("#top-10 ul"))
         renderMoviesInList(randomMovies, this.querySelector("#random ul"))
         function renderMoviesInList(movies, ul) {

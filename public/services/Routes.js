@@ -4,6 +4,8 @@ import { MoviesPage } from "../components/MoviesPage.js";
 import { RegisterPage } from "../components/RegisterPage.js";
 import { LoginPage } from "../components/LoginPage.js";
 import { AccountPage } from "../components/AccountPage.js";
+import { FavoritePage } from "../components/FavoritePage.js";
+import { WatchlistPage } from "../components/WatchlistPage.js";
 
 export const routes = [
     {
@@ -31,12 +33,14 @@ export const routes = [
         component: AccountPage, 
         requireLogIn: true
     },
-//     {
-//         path: "/account/favorites",
-//         component: FavoritesPage
-//     },	
-// {
-//         path: "/account/watchlist",
-//         component: WatchlistPage
-//     },	
+    {
+        path: "/account/favorites",
+        component: FavoritePage,
+        requireLogIn: true
+    },	
+{
+        path: "/account/watchlist",
+        component: WatchlistPage,
+        requireLogIn: true
+    },	
 ]
