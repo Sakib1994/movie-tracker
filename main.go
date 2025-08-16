@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"sakib.com/reelingit/data"
@@ -50,6 +51,24 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize account repository: %v", err)
 	}
+	// WebAuthn Handlers
+	wconfig := &webauthn.Config{
+		RPDisplayName: "ReelingIt",
+		RPID:          "localhost",
+		RPOrigins:     []string{"http://localhost:8080"},
+	}
+
+	var webAuthnManager *webauthn.WebAuthn
+
+	if webAuthnManager, err = webauthn.New(wconfig); err != nil {
+		logInstance.Error("Error creating WebAuthn", err)
+	}
+
+	if err != nil {
+		logInstance.Error("Error initialing Passkey engine", err)
+	}
+	passkeyRepo := data.NewPasskeyRepository(db, *logInstance)
+	webAuthnHandler := handlers.NewWebAuthnHandler(passkeyRepo, logInstance, webAuthnManager)
 
 	// Http multiplexer
 	mux := http.NewServeMux()
@@ -67,6 +86,10 @@ func main() {
 	mux.HandleFunc("GET /api/account/favorites/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetFavorites)))
 	mux.HandleFunc("GET /api/account/watchlist/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.GetWatchlist)))
 	mux.HandleFunc("POST /api/account/save-to-collection/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.SaveToCollection)))
+	mux.HandleFunc("POST /api/passkey/registration-begin/", accountHandler.AuthMiddleware(http.HandlerFunc(webAuthnHandler.WebAuthnRegistrationBeginHandler)))
+	mux.HandleFunc("POST /api/passkey/registration-end/", accountHandler.AuthMiddleware(http.HandlerFunc(webAuthnHandler.WebAuthnRegistrationEndHandler)))
+	mux.HandleFunc("POST /api/account/authentication-begin/", webAuthnHandler.WebAuthnAuthenticationBeginHandler)
+	mux.HandleFunc("POST /api/account/authentication-end/", webAuthnHandler.WebAuthnAuthenticationEndHandler)
 
 	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")

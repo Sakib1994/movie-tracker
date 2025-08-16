@@ -2,6 +2,7 @@ import { API } from "./services/API.js";
 import './components/YouTubeEmbed.js'
 import Router from "./services/Router.js";
 import Store from "./services/Store.js";
+import { Passkeys } from "./services/Passkey.js";
 
 
 window.app = {
@@ -102,6 +103,18 @@ window.app = {
     logout: () => {
         Store.jwt = null;
         app.Router.go("/")
+    },
+    addPasskey: async () => {
+        const username = "testuser"
+        await Passkeys.register(username)
+    },
+    loginWithPasskey: async () => {
+        const username = document.getElementById("login-emain").value
+        if (username.length) {
+            app.showError("To use a passkey, enter your email address first")
+        } else {
+            await Passkeys.authenticate(username);
+        }
     }
 }
 window.addEventListener("DOMContentLoaded", () => {
