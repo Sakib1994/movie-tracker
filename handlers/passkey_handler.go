@@ -70,7 +70,7 @@ func (h *WebAuthnHandler) WebAuthnRegistrationBeginHandler(w http.ResponseWriter
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sid",
 		Value:    t,
-		Path:     "api/passkey/registerStart",
+		Path:     "/",
 		MaxAge:   3600,
 		Secure:   true,
 		HttpOnly: true,
@@ -179,7 +179,7 @@ func (h *WebAuthnHandler) WebAuthnAuthenticationBeginHandler(w http.ResponseWrit
 	http.SetCookie(w, &http.Cookie{
 		Name:     "sid",
 		Value:    t,
-		Path:     "api/passkey/loginStart",
+		Path:     "/",
 		MaxAge:   3600,
 		Secure:   true,
 		HttpOnly: true,

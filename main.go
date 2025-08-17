@@ -88,8 +88,8 @@ func main() {
 	mux.HandleFunc("POST /api/account/save-to-collection/", accountHandler.AuthMiddleware(http.HandlerFunc(accountHandler.SaveToCollection)))
 	mux.HandleFunc("POST /api/passkey/registration-begin/", accountHandler.AuthMiddleware(http.HandlerFunc(webAuthnHandler.WebAuthnRegistrationBeginHandler)))
 	mux.HandleFunc("POST /api/passkey/registration-end/", accountHandler.AuthMiddleware(http.HandlerFunc(webAuthnHandler.WebAuthnRegistrationEndHandler)))
-	mux.HandleFunc("POST /api/account/authentication-begin/", webAuthnHandler.WebAuthnAuthenticationBeginHandler)
-	mux.HandleFunc("POST /api/account/authentication-end/", webAuthnHandler.WebAuthnAuthenticationEndHandler)
+	mux.HandleFunc("POST /api/passkey/authentication-begin/", webAuthnHandler.WebAuthnAuthenticationBeginHandler)
+	mux.HandleFunc("POST /api/passkey/authentication-end/", webAuthnHandler.WebAuthnAuthenticationEndHandler)
 
 	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")

@@ -1,7 +1,6 @@
 export const Passkeys = {
     register: async (username) => {
         try {
-            debugger
             // Get registration options with the challenge.
             const response = await fetch('/api/passkey/registration-begin/', {
                 method: 'POST',
@@ -24,11 +23,10 @@ export const Passkeys = {
             // A new public-private-key pair is created.
             const attestationResponse = await SimpleWebAuthnBrowser.startRegistration({ optionsJSON: options.publicKey });
 
-            debugger
             // Send attestationResponse back to server for verification and storage.
             const verificationResponse = await fetch('/api/passkey/registration-end/', {
                 method: 'POST',
-                credentials: 'same-origin',
+                credentials: "same-origin",
                 headers: {
                     'Content-Type': 'application/json',
                     "Authorization": app.Store.jwt ? `Bearer ${app.Store.jwt}` : null
@@ -49,8 +47,9 @@ export const Passkeys = {
     authenticate: async (email) => {
         try {
             // Get login options from your server with the challenge
-            const response = await fetch('/api/passkey/authentication-begin', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+            const response = await fetch('/api/passkey/authentication-begin/', {
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
             const options = await response.json();
@@ -58,9 +57,9 @@ export const Passkeys = {
             // This triggers the browser to display the passkey / WebAuthn modal 
             // The challenge has been signed after this.
             const assertionResponse = await SimpleWebAuthnBrowser.startAuthentication({ optionsJSON: options.publicKey });
-
+            debugger
             // Send assertionResponse back to server for verification.
-            const verificationResponse = await fetch('/api/passkey/authentication-end', {
+            const verificationResponse = await fetch('/api/passkey/authentication-end/', {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {

@@ -109,8 +109,8 @@ window.app = {
         await Passkeys.register(username)
     },
     loginWithPasskey: async () => {
-        const username = document.getElementById("login-emain").value
-        if (username.length) {
+        const username = document.getElementById("login-email").value
+        if (username.length < 4) {
             app.showError("To use a passkey, enter your email address first")
         } else {
             await Passkeys.authenticate(username);
