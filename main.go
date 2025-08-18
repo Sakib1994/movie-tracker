@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/joho/godotenv"
@@ -94,19 +95,18 @@ func main() {
 	catchAllHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./public/index.html")
 	}
-	/*
-		// SSR for the movie details
-		http.HandleFunc("/movies/", func(w http.ResponseWriter, r *http.Request) {
-			if strings.Count(r.URL.Path, "/") == 2 && strings.HasPrefix(r.URL.Path, "/movies/") {
-				handlers.SSRMovieDetailsHandler(movieRepo, logInstance)(w, r)
-			} else {
-				catchAllClientRoutesHandler(w, r)
-			}
-		})*/
+
+	// SSR for the movie details
+	http.HandleFunc("/movies/", func(w http.ResponseWriter, r *http.Request) {
+		if strings.Count(r.URL.Path, "/") == 2 && strings.HasPrefix(r.URL.Path, "/movies/") {
+			handlers.SSRMovieDetailsHandler(movieRepo, logInstance)(w, r)
+		} else {
+			catchAllHandler(w, r)
+		}
+	}) /**/
 
 	// Catch All
 	mux.HandleFunc("GET /movies", catchAllHandler)
-	mux.HandleFunc("GET /movies/", catchAllHandler)
 	mux.HandleFunc("GET /account/", catchAllHandler)
 
 	// Serve static files
